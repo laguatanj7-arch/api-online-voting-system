@@ -1,0 +1,145 @@
+{
+  "name": "Voting Management API",
+  "requests": [
+    {
+      "name": "Register",
+      "method": "POST",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/auth/register",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"username\": \"admin1\",\n  \"password\": \"password123\",\n  \"role\": \"admin\",\n  \"phone\": \"09123456789\",\n  \"address\": \"123 Main St\"\n}"
+      }
+    },
+    {
+      "name": "Login",
+      "method": "POST",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/auth/login",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"username\": \"admin1\",\n  \"password\": \"password123\"\n}"
+      }
+    },
+    {
+      "name": "Get Profile",
+      "method": "GET",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/users/profile",
+      "headers": [
+        { "key": "Authorization", "value": "Bearer {{token}}" }
+      ]
+    },
+    {
+      "name": "Update Profile",
+      "method": "PUT",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/users/profile",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json" },
+        { "key": "Authorization", "value": "Bearer {{token}}" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"phone\": \"0999999999\",\n  \"address\": \"456 New St\"\n}"
+      }
+    },
+    {
+      "name": "Create Election (admin)",
+      "method": "POST",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/elections",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json" },
+        { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"2026 Student Council\",\n  \"description\": \"Annual election\",\n  \"start_date\": \"2026-05-01 00:00:00\",\n  \"end_date\": \"2026-05-30 23:59:59\"\n}"
+      }
+    },
+    {
+      "name": "List Elections",
+      "method": "GET",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/elections",
+      "headers": [
+        { "key": "Authorization", "value": "Bearer {{token}}" }
+      ]
+    },
+    {
+      "name": "Add Candidate (admin)",
+      "method": "POST",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/candidates",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json" },
+        { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"election_id\": 1,\n  \"name\": \"Juan Dela Cruz\",\n  \"position\": \"President\"\n}"
+      }
+    },
+    {
+      "name": "Get Candidates for Election",
+      "method": "GET",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/candidates/1",
+      "headers": [
+        { "key": "Authorization", "value": "Bearer {{token}}" }
+      ]
+    },
+    {
+      "name": "Cast Vote",
+      "method": "POST",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/votes/cast",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json" },
+        { "key": "Authorization", "value": "Bearer {{token}}" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"election_id\": 1,\n  \"candidate_id\": 1\n}"
+      }
+    },
+    {
+      "name": "User Vote History",
+      "method": "GET",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/votes/user/1",
+      "headers": [
+        { "key": "Authorization", "value": "Bearer {{token}}" }
+      ]
+    },
+    {
+      "name": "Admin List All Elections",
+      "method": "GET",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/admin/elections",
+      "headers": [
+        { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+      ]
+    },
+    {
+      "name": "Admin List All Votes",
+      "method": "GET",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/admin/votes",
+      "headers": [
+        { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+      ]
+    },
+    {
+      "name": "Report: Vote Count",
+      "method": "GET",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/reports/vote-count",
+      "headers": [
+        { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+      ]
+    },
+    {
+      "name": "Report: Turnout",
+      "method": "GET",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/bscs3b/api/reports/turnout",
+      "headers": [
+        { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+      ]
+    }
+  ]
+}
