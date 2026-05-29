@@ -1,0 +1,28 @@
+{
+  "client": "Thunder Client",
+  "collectionName": "Insurance Policy Management API",
+  "dateExported": "2026-05-29",
+  "version": "1.2",
+  "requests": [
+    {
+      "name": "Login Admin",
+      "method": "POST",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/insurance_policy_backend/api/auth/login",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"admin@insurance.test\",\n  \"password\": \"password123\"\n}"
+      }
+    },
+    {
+      "name": "Register Customer",
+      "method": "POST",
+      "url": "http://localhost/FINAL%20VOTING%20SYSTEM/insurance_policy_backend/api/auth/register",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Juan Dela Cruz\",\n  \"email\": \"juan@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"09171234567\",\n  \"address\": \"Manila City\"\n}"
+      }
+    }
+  ]
+}

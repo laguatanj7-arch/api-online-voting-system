@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Insurance Policy API Demo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; color: #172026; background: #f5f7f8; }
+    header { padding: 18px 28px; background: #fff; border-bottom: 1px solid #d9e1e7; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    h1 { margin: 0; font-size: 22px; }
+    main { width: min(1100px, calc(100% - 28px)); margin: 22px auto 44px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+    section { background: #fff; border: 1px solid #d9e1e7; border-radius: 8px; padding: 16px; }
+    h2 { margin: 0 0 12px; font-size: 17px; }
+    label { display: grid; gap: 5px; margin-bottom: 9px; font-size: 13px; color: #66727d; }
+    input, textarea { width: 100%; border: 1px solid #d9e1e7; border-radius: 6px; padding: 10px; font: inherit; }
+    textarea { min-height: 78px; resize: vertical; }
+    button { border: 0; border-radius: 6px; background: #0f766e; color: #fff; padding: 10px 13px; font-weight: 700; cursor: pointer; }
+    button:hover { background: #115e59; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .wide { grid-column: 1 / -1; }
+    .session { color: #66727d; font-size: 13px; overflow-wrap: anywhere; }
+    pre { min-height: 180px; background: #111827; color: #d1fae5; padding: 14px; border-radius: 8px; white-space: pre-wrap; word-break: break-word; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Insurance Policy API Demo</h1>
+      <div class="session" id="sessionText">Not logged in</div>
+    </div>
+    <button onclick="logout()">Logout</button>
+  </header>
+
+  <main>
+    <section>
+      <h2>Register Customer</h2>
+      <label>Name <input id="regName" value="Juan Dela Cruz"></label>
+      <label>Email <input id="regEmail" value="juan@example.com"></label>
+      <label>Password <input id="regPassword" type="password" value="password123"></label>
+      <label>Phone <input id="regPhone" value="09171234567"></label>
+      <label>Address <input id="regAddress" value="Manila City"></label>
+      <button onclick="register()">Register</button>
+    </section>
+
+    <section>
+      <h2>Login</h2>
+      <label>Email <input id="loginEmail" value="admin@insurance.test"></label>
+      <label>Password <input id="loginPassword" type="password" value="password123"></label>
+      <div class="row">
+        <button onclick="login()">Login</button>
+        <button onclick="profile()">Profile</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Create Policy</h2>
+      <label>Customer ID <input id="policyCustomer" value="2"></label>
+      <label>Policy Number <input id="policyNumber" value="POL-1001"></label>
+      <label>Type <input id="policyType" value="Health"></label>
+      <label>Premium Amount <input id="premium" value="12000"></label>
+      <label>Coverage Amount <input id="coverage" value="250000"></label>
+      <label>Start Date <input id="startDate" type="date" value="2026-06-01"></label>
+      <label>End Date <input id="endDate" type="date" value="2027-06-01"></label>
+      <button onclick="createPolicy()">Create Policy</button>
+    </section>
+
+    <section>
+      <h2>Policies</h2>
+      <label>Policy ID <input id="policyId" value="1"></label>
+      <div class="row">
+        <button onclick="api('/policies')">List</button>
+        <button onclick="api('/policies/' + policyId.value)">Get One</button>
+        <button onclick="api('/admin/policies')">Admin List</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Claims</h2>
+      <label>Policy ID <input id="claimPolicy" value="1"></label>
+      <label>Incident Date <input id="incidentDate" type="date" value="2026-05-29"></label>
+      <label>Claim Amount <input id="claimAmount" value="5000"></label>
+      <label>Location <input id="incidentLocation" value="Quezon City"></label>
+      <label>Description <textarea id="incidentDescription">Minor vehicle damage after heavy rain.</textarea></label>
+      <label>Claim ID <input id="claimId" value="1"></label>
+      <div class="row">
+        <button onclick="createClaim()">Submit</button>
+        <button onclick="api('/claims/' + claimId.value)">Get One</button>
+        <button onclick="api('/admin/claims')">Admin List</button>
+      </div>
+    </section>
+
+    <section class="wide">
+      <h2>Reports and Output</h2>
+      <div class="row">
+        <button onclick="api('/reports/claims-status')">Claims Status</button>
+        <button onclick="api('/reports/premium-collection')">Premium Collection</button>
+      </div>
+      <pre id="output">Responses will appear here.</pre>
+    </section>
+  </main>
+
+  <script>
+    const baseUrl = "./api";
+    let token = localStorage.getItem("insurance_token") || "";
+    updateSession();
+
+    function updateSession() {
+      sessionText.textContent = token ? "Logged in with bearer token" : "Not logged in";
+    }
+
+    function show(data) {
+      output.textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function api(path, method = "GET", body = null) {
+      const options = { method, headers: { "Content-Type": "application/json" } };
+      if (token) options.headers.Authorization = `Bearer ${token}`;
+      if (body) options.body = JSON.stringify(body);
+      const response = await fetch(`${baseUrl}${path}`, options);
+      const data = await response.json();
+      show({ status: response.status, data });
+      return data;
+    }
+
+    async function register() {
+      await api("/auth/register", "POST", {
+        name: regName.value,
+        email: regEmail.value,
+        password: regPassword.value,
+        phone: regPhone.value,
+        address: regAddress.value
+      });
+    }
+
+    async function login() {
+      const data = await api("/auth/login", "POST", {
+        email: loginEmail.value,
+        password: loginPassword.value
+      });
+      if (data.token) {
+        token = data.token;
+        localStorage.setItem("insurance_token", token);
+        updateSession();
+      }
+    }
+
+    function logout() {
+      token = "";
+      localStorage.removeItem("insurance_token");
+      updateSession();
+      show({ message: "Logged out." });
+    }
+
+    function profile() {
+      api("/users/profile");
+    }
+
+    function createPolicy() {
+      api("/policies", "POST", {
+        customer_id: policyCustomer.value,
+        policy_number: policyNumber.value,
+        type: policyType.value,
+        premium_amount: premium.value,
+        coverage_amount: coverage.value,
+        start_date: startDate.value,
+        end_date: endDate.value
+      });
+    }
+
+    function createClaim() {
+      api("/claims", "POST", {
+        policy_id: claimPolicy.value,
+        incident_date: incidentDate.value,
+        claim_amount: claimAmount.value,
+        incident_location: incidentLocation.value,
+        incident_description: incidentDescription.value
+      });
+    }
+  </script>
+</body>
+</html>
